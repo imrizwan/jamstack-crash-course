@@ -1,23 +1,26 @@
-import logo from './logo.svg';
+import { useEffect, useState } from "react"
+import LinkList from "./components/LinkList"
+import LinkForm from "./components/LinkForm"
 import './App.css';
 
 function App() {
+
+  const [links, setLinks] = useState([])
+
+  const loadLinks = async () => {
+    const res = await fetch("/api/getLinks");
+    const links = await res.json();
+    setLinks(links);
+  }
+
+  useEffect(() => {
+    loadLinks();
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container py-5">
+      <LinkForm refreshLinks={loadLinks} />
+      <LinkList links={links} loadLinks={loadLinks} />
     </div>
   );
 }
